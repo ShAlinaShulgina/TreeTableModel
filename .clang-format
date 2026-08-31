@@ -1,0 +1,127 @@
+AccessModifierOffset: -3 #The extra indent or outdent of access modifiers, e.g. public:.
+
+AlignAfterOpenBracket: Align
+AlignArrayOfStructures: Right
+AlignConsecutiveAssignments: 
+  Enabled: false
+  AcrossEmptyLines: false
+  AcrossComments: false
+AlignConsecutiveBitFields: Consecutive
+AlignConsecutiveDeclarations: None
+AlignConsecutiveMacros: Consecutive
+# AlignConsecutiveShortCaseStatements:
+  # Enabled: true
+  # AcrossEmptyLines: true
+  # AcrossComments: true
+  # AlignCaseColons: false
+AlignEscapedNewlines: Left #Options for aligning backslashes in escaped newlines
+AlignOperands: true 
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 2
+
+AllowAllArgumentsOnNextLine: true
+#BinPackArguments is false
+AllowAllParametersOfDeclarationOnNextLine: false
+# BinPackParameters is OnePerLine
+AllowBreakBeforeNoexceptSpecifier: Never
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseExpressionOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortCompoundRequirementOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+AllowShortNamespacesOnASingleLine: false
+
+AlwaysBreakBeforeMultilineStrings: false
+
+BinPackArguments: true
+BinPackLongBracedList: true
+BinPackParameters: BinPack
+BitFieldColonSpacing: Both
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: true
+  AfterClass: true
+  AfterFunction: true
+  AfterCaseLabel: true
+  AfterNamespace: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: true
+  BeforeWhile: true
+  AfterControlStatement: Always
+  SplitEmptyFunction: false
+  SplitEmptyNamespace : false
+
+BreakAdjacentStringLiterals: true
+BreakAfterAttributes: Always
+BreakAfterReturnType: Automatic
+BreakArrays: false
+BreakBeforeBinaryOperators: All
+# BreakBeforeConceptDeclarations: Always
+BreakBeforeTemplateCloser: false
+BreakBeforeTernaryOperators: true
+BreakBinaryOperations: RespectPrecedence
+BreakConstructorInitializers: BeforeComma
+BreakFunctionDefinitionParameters: false
+BreakInheritanceList: BeforeComma
+BreakStringLiterals: false
+BreakTemplateDeclarations: Yes
+
+ColumnLimit: 119
+
+CompactNamespaces: false
+ConstructorInitializerIndentWidth: 3 #???
+Cpp11BracedListStyle: false
+
+DerivePointerAlignment: true
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: Always
+
+EnumTrailingComma: Remove
+
+FixNamespaceComments: true
+ShortNamespaceLines: 0
+
+IndentAccessModifiers: false
+IndentCaseBlocks: false
+IndentCaseLabels: false
+IndentExternBlock: AfterExternBlock
+IndentPPDirectives: None #BeforeHash defines
+IndentWrappedFunctionNames: true
+InsertBraces: true
+#IntegerLiteralSeparator: #look
+
+IndentWidth: 3
+
+KeepEmptyLines: 
+  AtEndOfFile: false
+  AtStartOfBlock: true
+  AtStartOfFile: false
+LambdaBodyIndentation: OuterScope
+
+PointerAlignment: Right
+QualifierAlignment: Leave
+
+MaxEmptyLinesToKeep: 1
+# NamespaceIndentation: All
+# NumericLiteralCase: #interesting clang-format22+
+RemoveSemicolon: true
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterOperatorKeyword: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCaseColon: false
+
+Language: Cpp
+Standard: c++17
+# LineEnding: LF
