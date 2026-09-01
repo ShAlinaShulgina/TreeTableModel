@@ -4,7 +4,7 @@
 
 #include <QMainWindow>
 
-class ValuesModel;
+class TreeTableModel;
 
 class MainWindow : public QMainWindow
 {
@@ -19,7 +19,7 @@ protected:
 
 private:
    Ui::MainWindow ui;
-   ValuesModel *m_model;
+   TreeTableModel *m_model;
    QAbstractItemView *m_view;
 
    void resizeHeaders();

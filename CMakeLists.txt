@@ -34,11 +34,13 @@ set(SOURCES
     main.cpp
     MainWindow.cpp
     ValuesModel.cpp
+    FormattingProxyModel.cpp
 )
 
 set(HEADERS
     MainWindow.h
     ValuesModel.h
+    FormattingProxyModel.h
 )
 
 set(FORMS

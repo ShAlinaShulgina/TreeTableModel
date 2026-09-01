@@ -1,8 +1,8 @@
-#include "ValuesModel.h"
+#include "TreeTableModel.h"
 
 #include <functional>
 
-ValuesModel::Node::Node(const QString &name, double value, Node *parent)
+TreeTableModel::Node::Node(const QString &name, double value, Node *parent)
    : m_name(name)
    , m_value(value)
    , m_hasValue(false)
@@ -10,23 +10,27 @@ ValuesModel::Node::Node(const QString &name, double value, Node *parent)
    , m_isDataNode(false)
 {}
 
-ValuesModel::Node::~Node()
+TreeTableModel::Node::~Node()
 {
-   qDeleteAll(m_children);
+   for (auto item : m_children)
+   {
+      delete item;
+   }
+   m_children.clear();
 }
 
-ValuesModel::ValuesModel(QObject *parent)
+TreeTableModel::TreeTableModel(QObject *parent)
    : QAbstractItemModel{ parent }
    , m_treeMode(false)
    , m_root(new Node)
 {}
 
-ValuesModel::~ValuesModel()
+TreeTableModel::~TreeTableModel()
 {
    delete m_root;
 }
 
-int ValuesModel::rowCount(const QModelIndex &parent) const
+int TreeTableModel::rowCount(const QModelIndex &parent) const
 {
    if (parent.isValid() && parent.column() > 0)
    {
@@ -43,13 +47,13 @@ int ValuesModel::rowCount(const QModelIndex &parent) const
    }
 }
 
-int ValuesModel::columnCount(const QModelIndex &parent) const
+int TreeTableModel::columnCount(const QModelIndex &parent) const
 {
    Q_UNUSED(parent);
    return Columns::LAST;
 }
 
-QVariant ValuesModel::data(const QModelIndex &index, int role) const
+QVariant TreeTableModel::data(const QModelIndex &index, int role) const
 {
    if (!index.isValid())
    {
@@ -77,7 +81,7 @@ QVariant ValuesModel::data(const QModelIndex &index, int role) const
    return QVariant();
 }
 
-QVariant ValuesModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant TreeTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
    if (orientation == Qt::Horizontal)
    {
@@ -103,7 +107,7 @@ QVariant ValuesModel::headerData(int section, Qt::Orientation orientation, int r
    return QVariant();
 }
 
-Qt::ItemFlags ValuesModel::flags(const QModelIndex &index) const
+Qt::ItemFlags TreeTableModel::flags(const QModelIndex &index) const
 {
    if (!index.isValid())
    {
@@ -112,7 +116,7 @@ Qt::ItemFlags ValuesModel::flags(const QModelIndex &index) const
    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QModelIndex ValuesModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex TreeTableModel::index(int row, int column, const QModelIndex &parent) const
 {
    if (!hasIndex(row, column, parent))
    {
@@ -141,7 +145,7 @@ QModelIndex ValuesModel::index(int row, int column, const QModelIndex &parent) c
    return QModelIndex();
 }
 
-QModelIndex ValuesModel::parent(const QModelIndex &child) const
+QModelIndex TreeTableModel::parent(const QModelIndex &child) const
 {
    if (!child.isValid() /* || child.column() > 0*/)
    {
@@ -173,7 +177,7 @@ QModelIndex ValuesModel::parent(const QModelIndex &child) const
    return QModelIndex();
 }
 
-bool ValuesModel::hasChildren(const QModelIndex &parent) const
+bool TreeTableModel::hasChildren(const QModelIndex &parent) const
 {
    if (parent.column() > 0)
    {
@@ -190,22 +194,69 @@ bool ValuesModel::hasChildren(const QModelIndex &parent) const
    }
 }
 
-void ValuesModel::setTreeMode(bool enable)
+void TreeTableModel::setTreeMode(bool enable)
 {
    if (m_treeMode == enable)
    {
       return;
    }
    m_treeMode = enable;
-   resetModel();
+   beginResetModel();
+   endResetModel();
 }
 
-bool ValuesModel::isTreeMode() const
+bool TreeTableModel::isTreeMode() const
 {
    return m_treeMode;
 }
 
-int ValuesModel::addNewName(const QString &name)
+void TreeTableModel::resetData()
+{
+   beginResetModel();
+   for (auto item : m_root->m_children)
+   {
+      delete item;
+   }
+   m_root->m_children.clear();
+   m_dataNodes.clear();
+   endResetModel();
+}
+
+int TreeTableModel::findRowByName(const QString &name) const
+{
+   Node *node = findNodeByPath(name);
+   if (!node || !node->m_isDataNode)
+   {
+      return -1;
+   }
+   return m_dataNodes.indexOf(node);
+}
+
+int TreeTableModel::findRowByIndex(const QModelIndex &index) const
+{
+   return findRowByName(getFullName(index));
+}
+
+int TreeTableModel::getCountElements() const
+{
+   return m_dataNodes.size();
+}
+
+QString TreeTableModel::getFullName(const QModelIndex &index) const
+{
+   if (!index.isValid())
+   {
+      return QString();
+   }
+   Node *node = static_cast<Node *>(index.internalPointer());
+   if (!node || node == m_root)
+   {
+      return QString();
+   }
+   return fullPath(node);
+}
+
+int TreeTableModel::addNewName(const QString &name)
 {
    if (name.isEmpty())
    {
@@ -291,7 +342,7 @@ int ValuesModel::addNewName(const QString &name)
    return dataRow;
 }
 
-void ValuesModel::updateValue(int row, const double &value)
+void TreeTableModel::updateValue(int row, const double &value)
 {
    if (row < 0 || row >= m_dataNodes.size())
    {
@@ -322,7 +373,7 @@ void ValuesModel::updateValue(int row, const double &value)
    }
 }
 
-void ValuesModel::removeValue(int row)
+void TreeTableModel::removeValue(int row)
 {
    if (row < 0 || row >= m_dataNodes.size())
    {
@@ -394,68 +445,7 @@ void ValuesModel::removeValue(int row)
    delete node;
 }
 
-void ValuesModel::resetData()
-{
-   beginResetModel();
-   qDeleteAll(m_root->m_children);
-   m_root->m_children.clear();
-   m_dataNodes.clear();
-   endResetModel();
-}
-
-int ValuesModel::findRowByName(const QString &name) const
-{
-   Node *node = findNodeByPath(name);
-   if (!node || !node->m_isDataNode)
-   {
-      return -1;
-   }
-   return m_dataNodes.indexOf(node);
-}
-
-int ValuesModel::findRowByIndex(const QModelIndex &index) const
-{
-   return findRowByName(getFullName(index));
-}
-
-int ValuesModel::getCountElements() const
-{
-   return m_dataNodes.size();
-}
-
-QString ValuesModel::getFullName(const QModelIndex &index) const
-{
-   if (!index.isValid())
-   {
-      return QString();
-   }
-   Node *node = static_cast<Node *>(index.internalPointer());
-   if (!node || node == m_root)
-   {
-      return QString();
-   }
-   return fullPath(node);
-}
-
-void ValuesModel::rebuildDataNodes()
-{
-   m_dataNodes.clear();
-   collectNodes(m_root, m_dataNodes);
-}
-
-void ValuesModel::collectNodes(Node *node, QVector<Node *> &list) const
-{
-   for (Node *child : std::as_const(node->m_children))
-   {
-      if (child->m_isDataNode)
-      {
-         list.append(child);
-      }
-      collectNodes(child, list);
-   }
-}
-
-ValuesModel::Node *ValuesModel::findNodeByPath(const QString &path) const
+TreeTableModel::Node *TreeTableModel::findNodeByPath(const QString &path) const
 {
    if (path.isEmpty())
    {
@@ -483,7 +473,7 @@ ValuesModel::Node *ValuesModel::findNodeByPath(const QString &path) const
    return current;
 }
 
-QString ValuesModel::fullPath(Node *node) const
+QString TreeTableModel::fullPath(Node *node) const
 {
    if (!node || node == m_root)
    {
@@ -503,7 +493,7 @@ QString ValuesModel::fullPath(Node *node) const
    return path;
 }
 
-QModelIndex ValuesModel::indexFromNode(Node *node) const
+QModelIndex TreeTableModel::indexFromNode(Node *node) const
 {
    if (!node || node == m_root)
    {
@@ -546,13 +536,7 @@ QModelIndex ValuesModel::indexFromNode(Node *node) const
    return QModelIndex();
 }
 
-void ValuesModel::resetModel()
-{
-   beginResetModel();
-   endResetModel();
-}
-
-void ValuesModel::removeNodeAndChildren(Node *node)
+void TreeTableModel::removeNodeAndChildren(Node *node)
 {
    if (!node)
    {

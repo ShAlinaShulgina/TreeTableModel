@@ -1,16 +1,16 @@
-#ifndef VALUESMODEL_H
-#define VALUESMODEL_H
+#ifndef TREETABLEMODEL_H
+#define TREETABLEMODEL_H
 
 #include <QAbstractItemModel>
 #include <QVector>
 
-class ValuesModel : public QAbstractItemModel
+class TreeTableModel : public QAbstractItemModel
 {
    Q_OBJECT
 
 public:
-   explicit ValuesModel(QObject *parent = nullptr);
-   ~ValuesModel() override;
+   explicit TreeTableModel(QObject *parent = nullptr);
+   ~TreeTableModel() override;
 
    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -25,9 +25,6 @@ public:
    void setTreeMode(bool enable);
    bool isTreeMode() const;
 
-   int addNewName(const QString &name);
-   void updateValue(int row, const double &value);
-   void removeValue(int row);
    void resetData();
 
    int findRowByName(const QString &name) const;
@@ -35,6 +32,10 @@ public:
 
    int getCountElements() const;
    QString getFullName(const QModelIndex &index) const;
+
+   int addNewName(const QString &name);
+   void updateValue(int row, const double &value);
+   void removeValue(int row);
 
    enum Columns
    {
@@ -61,13 +62,12 @@ private:
    Node *m_root;
    QVector<Node *> m_dataNodes;
 
-   void rebuildDataNodes();
-   void collectNodes(Node *node, QVector<Node *> &list) const;
    Node *findNodeByPath(const QString &path) const;
-   QString fullPath(Node *node) const;
    QModelIndex indexFromNode(Node *node) const;
-   void resetModel();
+   
+   QString fullPath(Node *node) const;
+   
    void removeNodeAndChildren(Node *node);
 };
 
-#endif // VALUESMODEL_H
+#endif

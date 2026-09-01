@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
-#include "ValuesModel.h"
+#include "TreeTableModel.h"
+#include "FormattingProxyModel.h"
 
 #include <QInputDialog>
 #include <QScrollBar>
@@ -12,9 +13,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
    ui.setupUi(this);
 
-   m_model = new ValuesModel();
-   ui.treeView->setModel(m_model);
-   ui.tableView->setModel(m_model);
+   m_model = new TreeTableModel(this);
+   FormattingProxyModel *proxyModel = new FormattingProxyModel(this);
+   proxyModel->setSourceModel(m_model);
+   
+   ui.treeView->setModel(proxyModel);
+   ui.tableView->setModel(proxyModel);
 
    m_model->setTreeMode(false);
    m_view = ui.tableView;
@@ -60,9 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow()
-{
-   delete m_model;
-}
+{}
 
 void MainWindow::resizeHeaders()
 {
