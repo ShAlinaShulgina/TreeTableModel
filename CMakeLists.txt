@@ -33,13 +33,13 @@ endforeach()
 set(SOURCES
     main.cpp
     MainWindow.cpp
-    ValuesModel.cpp
+    TreeTableModel.cpp
     FormattingProxyModel.cpp
 )
 
 set(HEADERS
     MainWindow.h
-    ValuesModel.h
+    TreeTableModel.h
     FormattingProxyModel.h
 )
 
