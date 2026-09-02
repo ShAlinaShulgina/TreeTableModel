@@ -3,6 +3,7 @@
 #include "TreeTableModel.h"
 #include "FormattingProxyModel.h"
 
+#include <QDebug>
 #include <QInputDialog>
 #include <QScrollBar>
 
@@ -71,12 +72,12 @@ void MainWindow::resizeHeaders()
    // table
    int allWidth = ui.tableView->width() - 6 - ui.tableView->verticalScrollBar()->width();
    const int nameWidget = 600;
-   ui.tableView->setColumnWidth(ValuesModel::Columns::NAME, nameWidget);
-   ui.tableView->setColumnWidth(ValuesModel::Columns::VARIABLE, allWidth - nameWidget);
+   ui.tableView->setColumnWidth(TreeTableModel::Columns::NAME, nameWidget);
+   ui.tableView->setColumnWidth(TreeTableModel::Columns::VARIABLE, allWidth - nameWidget);
    // view
    allWidth = ui.treeView->width() - 6 - ui.treeView->verticalScrollBar()->width();
-   ui.treeView->setColumnWidth(ValuesModel::Columns::NAME, nameWidget);
-   ui.treeView->setColumnWidth(ValuesModel::Columns::VARIABLE, allWidth - nameWidget);
+   ui.treeView->setColumnWidth(TreeTableModel::Columns::NAME, nameWidget);
+   ui.treeView->setColumnWidth(TreeTableModel::Columns::VARIABLE, allWidth - nameWidget);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
